@@ -1,8 +1,9 @@
-package Default;
+package crehop;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -13,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class Main extends JavaPlugin{
 	public final Logger logger=Logger.getLogger("Minecraft");
     public static Main plugin;
+	public static ArrayList<BlockQueue> activeQueues = new ArrayList<BlockQueue>();
     public File configFile;
     
 

@@ -1,4 +1,4 @@
-package Default;
+package utils;
 
 import org.bukkit.entity.Player;
 
