@@ -16,6 +16,7 @@ public class Main extends JavaPlugin{
     public static Main plugin;
 	public static ArrayList<BlockQueue> activeQueues = new ArrayList<BlockQueue>();
     public File configFile;
+    public static boolean debug = true; 
     
 
 
@@ -30,14 +31,31 @@ public class Main extends JavaPlugin{
  	public void onEnable(){
  	    Bukkit.getServer().getPluginManager().registerEvents(new EventListener(this), this);
  		configFile = new File(getDataFolder(), "config.yml");
- 		try
- 		  {
- 		   firstRun();
- 		     }
- 		  catch (Exception e)
- 		  {
- 		         e.printStackTrace();
- 		     }
+ 		try{
+ 			firstRun();
+ 		}
+ 		catch (Exception e)
+ 		{
+ 			e.printStackTrace();
+ 		}
+ 		this.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
+		{
+ 			int tick = 0;
+		    @Override  
+		    public void run()
+		    {
+		    	if(activeQueues.isEmpty() == false){
+		    		tick++;
+		    		if(tick > activeQueues.size() - 1){
+		    			tick = 0;
+		    		}
+		    		activeQueues.get(tick).tickBuilder();
+		    	}
+		    	else if(debug){
+		    		Bukkit.broadcastMessage("NO QUEUES");
+		    	}
+		    }
+		}, 0L, 5L);
 
 	 	plugin = this;
 	 	PluginDescriptionFile pdfFile=this.getDescription();

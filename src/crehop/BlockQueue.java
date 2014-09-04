@@ -21,7 +21,6 @@ public class BlockQueue {
 	int xCopyChunk;
 	int yCopyChunk;
 	int zCopyChunk;
-	
 	ArrayList<Integer> XNewChunk = new ArrayList<Integer>();
 	ArrayList<Integer> ZNewChunk = new ArrayList<Integer>();
 	ArrayList<Integer> YNewChunk = new ArrayList<Integer>();
