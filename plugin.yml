@@ -1,14 +1,14 @@
-name: MobLibrary
-main: me.ThaH3lper.com.MobLibrary
+name: TownyConstructionSet
+main: crehop.Main
 version: 1.0
-description: By ThaH3lper :)
+description: By Crehop!
 commands:
-  Library:
-    description: Use it to open Library!
+  build:
+    description: Use it to build!
     aliases: [lib]
     
 permissions:
-  Moblib.Admin:
+  constructor.admin:
     description: Gives access to all Admin commands!
     default: op
   

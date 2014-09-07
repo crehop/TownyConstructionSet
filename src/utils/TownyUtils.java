@@ -43,7 +43,7 @@ public class TownyUtils {
 		return canbuild;
 	}
 	
-	public static boolean confirmKing(Player player){
+	public static boolean isKing(Player player){
 		 Resident resident = new Resident(player.getName());
 		 if(resident.isKing()){
 			 return true;
