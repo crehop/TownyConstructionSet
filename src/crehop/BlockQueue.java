@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public class BlockQueue {
@@ -27,7 +28,9 @@ public class BlockQueue {
 	int XCopySize;
 	int ZNewSize;
 	int XNewSize;
-
+	ArrayList<Material> PlaceLast = new ArrayList<Material>();
+	ArrayList<Block> LastBlocksCopied = new ArrayList<Block>();
+	ArrayList<Block> LastBlocksPasted = new ArrayList<Block>();
 	
 	public BlockQueue(Chunk copyChunk, Chunk newChunk, int sizeModifier){
 		this.sizeModifier = sizeModifier;
@@ -48,12 +51,35 @@ public class BlockQueue {
 		this.resetNewChunkX();
 		this.resetNewChunkY();
 		this.resetNewChunkZ();
+		this.startUp();
 	   ZCopySize = this.ZCopyChunk.size();
 		XCopySize = this.XCopyChunk.size();
 		ZNewSize = this.ZNewChunk.size();
 		XNewSize = this.XNewChunk.size();
 		Bukkit.broadcastMessage(this.getTotalBlocksInQueue() + " TOTAL BLOCKS ADDED");
 		Main.activeQueues.add(this);
+	}
+	private void startUp() {
+		PlaceLast.add(Material.REDSTONE_TORCH_OFF);
+		PlaceLast.add(Material.REDSTONE_TORCH_ON);
+		PlaceLast.add(Material.WATER);
+		PlaceLast.add(Material.LAVA);
+		PlaceLast.add(Material.SIGN);
+		PlaceLast.add(Material.ITEM_FRAME);
+		PlaceLast.add(Material.PAINTING);
+		PlaceLast.add(Material.LEVER);
+		PlaceLast.add(Material.STONE_BUTTON);
+		PlaceLast.add(Material.WOOD_BUTTON);
+		PlaceLast.add(Material.LADDER);
+		PlaceLast.add(Material.VINE);
+		PlaceLast.add(Material.SKULL_ITEM);
+		PlaceLast.add(Material.SKULL);
+		PlaceLast.add(Material.TORCH);
+		PlaceLast.add(Material.TRAP_DOOR);
+		PlaceLast.add(Material.TRIPWIRE_HOOK);
+		PlaceLast.add(Material.COCOA);
+		PlaceLast.add(Material.STATIONARY_LAVA);
+		PlaceLast.add(Material.STATIONARY_WATER);
 	}
 	public void tickBuilder(){
 		if(Main.debug){
@@ -108,14 +134,35 @@ public class BlockQueue {
 				this.XNewChunk.clear();
 			}
 			if(toBeCopied != null && toBePasted != null){
-				utils.BlockUtils.build(toBeCopied, toBePasted);
+				if(this.isMorphic(toBeCopied)){
+					this.LastBlocksCopied.add(toBeCopied);
+					this.LastBlocksPasted.add(toBePasted);
+					this.tickBuilder();
+					Bukkit.broadcastMessage("CALLED 1");
+					return;
+				}
+				else{
+					utils.BlockUtils.build(toBeCopied, toBePasted);
+					Bukkit.broadcastMessage("CALLED 2");
+				}
 			}
 		}
 		else{
-			Main.activeQueues.remove(this);
-			if(Main.debug){
-				Bukkit.broadcastMessage("QUEUE CLOSED!");
+			if(this.LastBlocksCopied.isEmpty() == false){
+				utils.BlockUtils.build(this.LastBlocksCopied.get(0), this.LastBlocksPasted.get(0));
+				this.LastBlocksCopied.remove(0);
+				this.LastBlocksPasted.remove(0);
+				if(Main.debug){
+					Bukkit.broadcastMessage("BACKUP QUEUE BLOCK PLACED!");
+				}
 			}
+			else{
+				Main.activeQueues.remove(this);
+				if(Main.debug){
+					Bukkit.broadcastMessage("QUEUE CLOSED!");
+				}
+			}
+
 		}
 
 	}
@@ -134,7 +181,7 @@ public class BlockQueue {
 		}
 	}
 	public void resetCopyChunkY(){
-		for(int y = yCopyChunk; y < 256; y++){
+		for(int y = yCopyChunk; y < 7; y++){
 			YCopyChunk.add(y);
 		}
 	}
@@ -154,12 +201,20 @@ public class BlockQueue {
 	}
 	
 	public void resetNewChunkY(){
-		for(int y = yNewChunk; y < 256; y++){
+		for(int y = yNewChunk; y < 7; y++){
 			YNewChunk.add(y);
 		}
 	}
 	
 	public int getTotalBlocksInQueue() {
 		return (128 * this.XCopyChunk.size() * this.ZCopyChunk.size());
+	}
+	
+	public boolean isMorphic(Block Block){
+		if(PlaceLast.contains(Block.getType())){
+			Bukkit.broadcastMessage("MORPHIC FOUND AND STORED");
+			return true;
+		}
+		return false;
 	}
 }
