@@ -6,6 +6,9 @@ commands:
   build:
     description: Use it to build!
     aliases: [lib]
+  build2:
+    description: Use it to build2!
+    aliases: [lib]
     
 permissions:
   constructor.admin:

@@ -15,13 +15,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import utils.BuildUtils;
+
 public class Main extends JavaPlugin{
 	public final Logger logger=Logger.getLogger("Minecraft");
     public static Main plugin;
 	public static ArrayList<BlockQueue> activeQueues = new ArrayList<BlockQueue>();
+	public static ArrayList<BuildPlace> buildPlaces = new ArrayList<BuildPlace>();
     public File configFile;
     public static boolean debug = false; 
-    public static int queuespeed = 5;
+    public static long queueSpeed = 1;
+    public static int yCheckHeight = 3;
 
 
  
@@ -59,10 +63,10 @@ public class Main extends JavaPlugin{
 		    		}
 		    	}
 		    	else if(debug){
-		    		Bukkit.broadcastMessage(ChatColor.RED + "NO QUEUES" + activeQueues.size());
+		    		//Bukkit.broadcastMessage(ChatColor.RED + "NO QUEUES" + activeQueues.size());
 		    	}
 		    }
-		}, 0L, 1L);
+		}, 0L, queueSpeed);
 
 	 	plugin = this;
 	 	PluginDescriptionFile pdfFile=this.getDescription();
@@ -101,7 +105,13 @@ public class Main extends JavaPlugin{
 
 		Player player = (Player) sender;
 		if(commandLabel.equalsIgnoreCase("build")){
-			BlockQueue test = new BlockQueue(Bukkit.getWorld("world").getChunkAt(new Location(Bukkit.getWorld("world"),0,0,0)), player.getLocation().getChunk(), 0);
+//			BlockQueue test = new BlockQueue(Bukkit.getWorld("world").getChunkAt(new Location(Bukkit.getWorld("world"),0,0,0)), player.getLocation().getChunk(), 1, player.getLocation().getBlockY());
+//			player.sendMessage("ATTEMPTING BLOCK BUILD QUEUE, ESTIMATED TIME REMAINING = " + ((100/5) * test.getTotalBlocksInQueue()) );
+			BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, "TEST");
+			return true;
+		}
+		if(commandLabel.equalsIgnoreCase("build2")){
+			BlockQueue test = new BlockQueue(Bukkit.getWorld("world").getChunkAt(new Location(Bukkit.getWorld("world"),0,0,0)), player.getLocation().getChunk(), 10, player.getLocation().getBlockY());
 			player.sendMessage("ATTEMPTING BLOCK BUILD QUEUE, ESTIMATED TIME REMAINING = " + ((100/5) * test.getTotalBlocksInQueue()) );
 			return true;
 		}
