@@ -56,7 +56,6 @@ public class BuildUtils {
 			player.sendMessage(ChatColor.RED + "You can only setup a build location in the build world, Please enter the portal at" + ChatColor.GREEN + "/spawn");
 			return false;
 		}
-		return false;
 	}
 	public static boolean enoughMoneyToBuild(Player player, int multiplier){
 		//TODO add economy integration here

@@ -6,6 +6,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,6 +28,7 @@ public class Main extends JavaPlugin{
     public static boolean debug = false; 
     public static long queueSpeed = 1;
     public static int yCheckHeight = 3;
+	public static Economy economy;
 
 
  
