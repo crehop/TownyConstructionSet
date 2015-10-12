@@ -37,11 +37,16 @@ public class BuildUtils {
 	public static boolean setupBuildPlace(Player player, Chunk chunk, int multiplier,String name){
 		if(chunk.getWorld().getName().equalsIgnoreCase("build")){
 			if(enoughRoomForBuildPlace(chunk,multiplier)){
+				int cost = 100000 * multiplier;
 				if(enoughMoneyToBuild(player, multiplier)){
 					Bukkit.broadcastMessage(ChatColor.RED + "MULTIPLIER INITIAL SET" + multiplier);
 					BuildPlace build = new BuildPlace(chunk, multiplier, name, player);
 					Main.buildPlaces.add(build);
 					return true;
+				}
+				else{
+					player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY: please find a spot further away from other builds (must be 17 blocks away)");
+					return false;
 				}
 			}else{
 				player.sendMessage(ChatColor.RED + "NOT ENOUGH ROOM: please find a spot further away from other builds (must be 17 blocks away)");
