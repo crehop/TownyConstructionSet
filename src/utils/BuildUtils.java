@@ -3,6 +3,7 @@ package utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -88,5 +89,13 @@ public class BuildUtils {
 	}
 	public void syncID(int newID){
 		this.ID = newID;
+	}
+	public static BuildPlace getBuildPlace(Location location){
+		for(BuildPlace place:Main.placesCheck){
+			if(place.withinBuildPlace(location)){
+				return place;
+			}
+		}
+		return null;
 	}
 }

@@ -20,7 +20,7 @@ public class BuildPlace {
 	World world;
 	String name;
 	Chunk chunk;
-	Player owner;
+	String owner;
 	int cost;
 	
 	public BuildPlace(Chunk chunk, int multiplier, String name, Player owner){
@@ -32,7 +32,7 @@ public class BuildPlace {
 			Bukkit.broadcastMessage("MULTIPLIER SET TO = " + multiplier);
 		}
 		Bukkit.broadcastMessage("MULTIPLIER = " + this.multiplier);
-		this.owner = owner;
+		this.owner = owner.getName();
 		xMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockX();
 		xMax = xMin + (16 * this.multiplier) - 1;
 		zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ();
@@ -45,6 +45,7 @@ public class BuildPlace {
 		this.multiplier = multiplier;
 		this.buildOutline();
 		Main.buildPlaces.put(this.name, this);
+		Main.placesCheck.add(this);
 		Bukkit.broadcastMessage("BUILDPLACE " + name + " CREATED!");
 	}
 
@@ -98,5 +99,9 @@ public class BuildPlace {
 	}
 	public int getCost(){
 		return this.cost;
+	}
+
+	public String getOwner() {
+		return this.owner;
 	}
 }

@@ -28,6 +28,7 @@ public class Main extends JavaPlugin{
 	public final Logger logger=Logger.getLogger("Minecraft");
     public static Main plugin;
 	public static ArrayList<BlockQueue> activeQueues = new ArrayList<BlockQueue>();
+	public static ArrayList<BuildPlace> placesCheck = new ArrayList<BuildPlace>();
     public File configFile;
     public static boolean debug = false; 
     public static long queueSpeed = 1;
