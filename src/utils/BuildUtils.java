@@ -12,44 +12,69 @@ import crehop.BuildPlace;
 import crehop.Main;
 
 public class BuildUtils {
-	public static boolean enoughRoomForBuildPlace(Chunk chunk, int multiplier){
+	private static int ID = 0;
+	private static boolean check = false;
+	public static boolean enoughRoomForBuildPlace(Chunk chunk, int multiplier, Player player){
 		if(multiplier == 0){
 			multiplier = 1;
 		}
 		World world = chunk.getWorld();
-		int xMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockX();
-		int xMax = xMin + (16 * multiplier);
-		int zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ();
-		int zMax = zMin + (16 * multiplier);		
+		int xMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockX() - 16;
+		int xMax = xMin + (16 * multiplier) + 16;
+		int zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ() - 16;
+		int zMax = zMin + (16 * multiplier) + 16;	
 		Bukkit.broadcastMessage("XMIN = " + xMin + " XMAX = " + xMax + "ZMIN = " + zMin + " ZMAX = " + zMax + "YCHECK = " + Main.yCheckHeight);
+		check = false;
 		for(int x = xMin; x <= xMax; x++){
 			for(int z = zMin; z <= zMax; z++){
-				if(x == xMin || x == xMax || z == zMin || z == zMax){
 					Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
 					if(block.getType() == Material.WOOL){
-						return false;
-					}
+						check = true;
 				}
 			}
+		}
+		if(check == true){
+			player.sendMessage(ChatColor.RED + "NOT FAR ENOUGH: please find a spot further away from other builds (must be 17 blocks away)");
+			return false;
+		}
+		check = false;
+		for(int x = xMin - 17; x <= xMax + 17; x++){
+			for(int z = zMin; z <= zMax; z++){
+					Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
+					if(block.getType() == Material.WOOL){
+						check = true;
+				}
+			}
+		}
+		for(int x = xMin; x <= xMax; x++){
+			for(int z = zMin - 17; z <= zMax + 17; z++){
+					Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
+					if(block.getType() == Material.WOOL){
+						check = true;
+				}
+			}
+		}
+		if(check == false){
+			player.sendMessage(ChatColor.RED + "TOO FAR!: please find a spot closer to other builds (must be 17 blocks away)");
+			return false;
 		}
 		return true;
 	}
 	public static boolean setupBuildPlace(Player player, Chunk chunk, int multiplier,String name){
 		if(chunk.getWorld().getName().equalsIgnoreCase("build")){
-			if(enoughRoomForBuildPlace(chunk,multiplier)){
-				int cost = 100000 * multiplier;
-				if(enoughMoneyToBuild(player, multiplier)){
+			if(enoughRoomForBuildPlace(chunk,multiplier,player)){
+				int cost = 10000 * multiplier;
+				if(MoneyUtils.hasEnoughMoney(player, cost)){
 					Bukkit.broadcastMessage(ChatColor.RED + "MULTIPLIER INITIAL SET" + multiplier);
 					BuildPlace build = new BuildPlace(chunk, multiplier, name, player);
-					Main.buildPlaces.add(build);
+					build.setCost(cost);
+					MoneyUtils.withdraw(player,cost);
 					return true;
-				}
-				else{
-					player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY: please find a spot further away from other builds (must be 17 blocks away)");
+				}else{
+					player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY: please find more Money, you need: $" + cost + " to have a buildspace!");
 					return false;
 				}
 			}else{
-				player.sendMessage(ChatColor.RED + "NOT ENOUGH ROOM: please find a spot further away from other builds (must be 17 blocks away)");
 				return false;
 			}
 		}else{
@@ -57,8 +82,11 @@ public class BuildUtils {
 			return false;
 		}
 	}
-	public static boolean enoughMoneyToBuild(Player player, int multiplier){
-		//TODO add economy integration here
-		return true;
+	public static int getID() {
+		ID = (ID + 1);
+		return ID;
+	}
+	public void syncID(int newID){
+		this.ID = newID;
 	}
 }

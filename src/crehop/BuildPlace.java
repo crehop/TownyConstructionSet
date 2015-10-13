@@ -21,6 +21,8 @@ public class BuildPlace {
 	String name;
 	Chunk chunk;
 	Player owner;
+	int cost;
+	
 	public BuildPlace(Chunk chunk, int multiplier, String name, Player owner){
 		if(multiplier < 1){
 			this.multiplier = 1;
@@ -42,6 +44,7 @@ public class BuildPlace {
 		this.chunk = chunk;
 		this.multiplier = multiplier;
 		this.buildOutline();
+		Main.buildPlaces.put(this.name, this);
 		Bukkit.broadcastMessage("BUILDPLACE " + name + " CREATED!");
 	}
 
@@ -88,5 +91,12 @@ public class BuildPlace {
 	}
 	public int getMultiplier(){
 		return this.multiplier;
+	}
+
+	public void setCost(int cost2) {
+		this.cost = cost2;
+	}
+	public int getCost(){
+		return this.cost;
 	}
 }

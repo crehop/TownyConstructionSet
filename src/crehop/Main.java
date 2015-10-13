@@ -4,8 +4,10 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -14,22 +16,26 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import utils.BuildUtils;
+import utils.MoneyUtils;
 
 public class Main extends JavaPlugin{
 	public final Logger logger=Logger.getLogger("Minecraft");
     public static Main plugin;
 	public static ArrayList<BlockQueue> activeQueues = new ArrayList<BlockQueue>();
-	public static ArrayList<BuildPlace> buildPlaces = new ArrayList<BuildPlace>();
     public File configFile;
     public static boolean debug = false; 
     public static long queueSpeed = 1;
     public static int yCheckHeight = 3;
 	public static Economy economy;
-
+	public static HashMap<String,BuildPlace> buildPlaces = new HashMap<String,BuildPlace>();
+    public static Permission perms = null;
+    public static Chat chat = null;
 
  
  @Override
@@ -37,11 +43,13 @@ public class Main extends JavaPlugin{
  		{
 	 	PluginDescriptionFile pdfFile=this.getDescription();
 	 	logger.info(pdfFile.getName() + " Has Been Disabled!!");
+	 
  		}
  
  	public void onEnable(){
  	    Bukkit.getServer().getPluginManager().registerEvents(new EventListener(this), this);
  		configFile = new File(getDataFolder(), "config.yml");
+ 		setupEconomy();
  		try{
  			firstRun();
  		}
@@ -104,20 +112,51 @@ public class Main extends JavaPlugin{
 		
 	}
 	public boolean onCommand(CommandSender sender,Command cmd,String commandLabel, String[] args)
-	{
-
+	{	
 		Player player = (Player) sender;
+		Location location = player.getLocation();
+		location.setY(3);
 		if(commandLabel.equalsIgnoreCase("build")){
-//			BlockQueue test = new BlockQueue(Bukkit.getWorld("world").getChunkAt(new Location(Bukkit.getWorld("world"),0,0,0)), player.getLocation().getChunk(), 1, player.getLocation().getBlockY());
-//			player.sendMessage("ATTEMPTING BLOCK BUILD QUEUE, ESTIMATED TIME REMAINING = " + ((100/5) * test.getTotalBlocksInQueue()) );
-			BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, "TEST");
-			return true;
+			if(player.getWorld().getBlockAt(location).getType().toString().contains("BEDROCK")){
+				player.sendMessage(ChatColor.RED + "CANNOT BUILD ON THE KINGS ROAD!");
+				return false;
+			}else{
+				player.sendMessage("BUILD1 " + args.length + MoneyUtils.hasEnoughMoney(player, 10000));
+				if(args.length == 0){
+					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, ""+BuildUtils.getID());
+				}
+				if(args.length == 1 && args[0].equalsIgnoreCase("list")){
+					player.sendMessage("BUILD2 " + args.length + args[0]);
+					player.sendMessage("BUILD SIZE :" + buildPlaces.size());
+				}
+				return true;
+			}
 		}
 		if(commandLabel.equalsIgnoreCase("build2")){
-			BlockQueue test = new BlockQueue(Bukkit.getWorld("world").getChunkAt(new Location(Bukkit.getWorld("world"),0,0,0)), player.getLocation().getChunk(), 10, player.getLocation().getBlockY());
-			player.sendMessage("ATTEMPTING BLOCK BUILD QUEUE, ESTIMATED TIME REMAINING = " + ((100/5) * test.getTotalBlocksInQueue()) );
-			return true;
+			if(args.length > 0){
+				if(!(buildPlaces.containsKey(args[0]))){
+					player.sendMessage("BUILDPLACE DOES NOT EXIST PLEASE TRY AGAIN" + buildPlaces.keySet());
+				}else{
+					Bukkit.broadcastMessage("SIZE" + buildPlaces.size() + " NAME" + buildPlaces.values());
+					
+					BlockQueue test = new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
+					player.sendMessage("SUCCESS, BUILDING" + buildPlaces.size());
+					return true;
+				}
+			}
 		}
 		return false;
 	}
+
+	private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null)
+        {
+            economy = economyProvider.getProvider();
+            Bukkit.broadcastMessage("ECONOMY SET UP!");
+        }
+
+        return (economy != null);
+    }
 }

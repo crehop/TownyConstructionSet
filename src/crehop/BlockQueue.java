@@ -55,7 +55,7 @@ public class BlockQueue {
 		this.resetNewChunkY();
 		this.resetNewChunkZ();
 		this.startUp();
-	   ZCopySize = this.ZCopyChunk.size();
+		ZCopySize = this.ZCopyChunk.size();
 		XCopySize = this.XCopyChunk.size();
 		ZNewSize = this.ZNewChunk.size();
 		XNewSize = this.XNewChunk.size();
@@ -192,7 +192,7 @@ public class BlockQueue {
 		}
 	}
 	public void resetCopyChunkY(){
-		for(int y = yCopyChunk; y < yCopyChunk + (12 * sizeMultiplier); y++){
+		for(int y = yCopyChunk; y < yCopyChunk + (16 * sizeMultiplier); y++){
 			YCopyChunk.add(y);
 		}
 	}
@@ -212,7 +212,7 @@ public class BlockQueue {
 	}
 	
 	public void resetNewChunkY(){
-		for(int y = yNewChunk; y < yNewChunk + (12 * sizeMultiplier); y++){
+		for(int y = yNewChunk; y < yNewChunk + (16 * sizeMultiplier); y++){
 			YNewChunk.add(y);
 		}
 	}
