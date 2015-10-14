@@ -1,10 +1,16 @@
 package crehop;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Hopper;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import utils.BuildUtils;
@@ -24,7 +30,7 @@ public class EventListener implements Listener{
 	
 	@EventHandler
 	public void blockBreakEvent(BlockBreakEvent event){
-		if(event.getBlock().getWorld().getName().toString().contains("build")){
+		if(event.getBlock().getWorld().getName().toString().contains("build") && event.getPlayer().isOp() == false){
 			if(event.getBlock().getY() <= 5){
 				if(event.getBlock().getType() == Material.WOOL || event.getBlock().getType() == Material.SIGN_POST){
 					event.setCancelled(true);
@@ -46,11 +52,11 @@ public class EventListener implements Listener{
 	}
 	@EventHandler
 	public void blockPlaceEvent(BlockPlaceEvent event){
-		if(event.getBlock().getWorld().getName().toString().contains("build")){
+		if(event.getBlock().getWorld().getName().toString().contains("build") && event.getPlayer().isOp() == false){
 			if(event.getBlock().getY() <= 5){
 				if(event.getBlock().getType() == Material.WOOL || event.getBlock().getType() == Material.SIGN_POST){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage("Cannot place wool or standing signs at this height");
+					event.getPlayer().sendMessage(ChatColor.RED + "Cannot place wool or standing signs at this height");
 				}
 			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
@@ -58,11 +64,19 @@ public class EventListener implements Listener{
 			}else{
 				BuildPlace place = BuildUtils.getBuildPlace(event.getBlock().getLocation());
 				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName())){
-					
+					Bukkit.broadcastMessage("PLACE CONFIRMED!" + place.getOwner());
 				}else{
 					event.setCancelled(true);
 				}
-				Bukkit.broadcastMessage("PLACE CONFIRMED!" + place.getOwner());
+			}
+		}
+	}
+	@EventHandler
+	public void chestOpenEvent(InventoryOpenEvent e){
+		if(e.getPlayer().getWorld().getName().toString().contains("build") && e.getPlayer().isOp() == false){
+			if(e.getInventory().getHolder() instanceof Chest || e.getInventory().getHolder() instanceof DoubleChest || e.getInventory().getHolder() instanceof Dispenser 
+				 ||e.getInventory().getHolder() instanceof Hopper){
+				 e.setCancelled(true);
 			}
 		}
 	}

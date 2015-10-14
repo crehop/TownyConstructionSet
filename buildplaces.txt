@@ -1,0 +1,14 @@
+name: MobLibrary
+main: me.ThaH3lper.com.MobLibrary
+version: 1.0
+description: By ThaH3lper :)
+commands:
+  Library:
+    description: Use it to open Library!
+    aliases: [lib]
+    
+permissions:
+  Moblib.Admin:
+    description: Gives access to all Admin commands!
+    default: op
+  

@@ -6,7 +6,7 @@ commands:
   build:
     description: Use it to build!
     aliases: [lib]
-  build2:
+  construct:
     description: Use it to build2!
     aliases: [lib]
     

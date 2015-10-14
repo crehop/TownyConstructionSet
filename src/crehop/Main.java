@@ -23,6 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import utils.BuildUtils;
 import utils.MoneyUtils;
+import utils.SaveLoad;
+import utils.TownyUtils;
 
 public class Main extends JavaPlugin{
 	public final Logger logger=Logger.getLogger("Minecraft");
@@ -83,6 +85,7 @@ public class Main extends JavaPlugin{
 	 	plugin = this;
 	 	PluginDescriptionFile pdfFile=this.getDescription();
 	 	logger.info(pdfFile.getName() + " Has Been Enabled!!");
+	 	SaveLoad.readStoredData("StoredLocations.txt");
  	}
 	private void firstRun() throws Exception{
 		if(!configFile.exists())
@@ -122,28 +125,42 @@ public class Main extends JavaPlugin{
 				player.sendMessage(ChatColor.RED + "CANNOT BUILD ON THE KINGS ROAD!");
 				return false;
 			}else{
-				player.sendMessage("BUILD1 " + args.length + MoneyUtils.hasEnoughMoney(player, 10000));
 				if(args.length == 0){
 					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, ""+BuildUtils.getID());
 				}
 				if(args.length == 1 && args[0].equalsIgnoreCase("list")){
-					player.sendMessage("BUILD2 " + args.length + args[0]);
 					player.sendMessage("BUILD SIZE :" + buildPlaces.size());
+					player.sendMessage("" + buildPlaces.values());
 				}
 				return true;
 			}
 		}
-		if(commandLabel.equalsIgnoreCase("build2")){
+		if(commandLabel.equalsIgnoreCase("construct")){
 			if(args.length > 0){
 				if(!(buildPlaces.containsKey(args[0]))){
 					player.sendMessage("BUILDPLACE DOES NOT EXIST PLEASE TRY AGAIN" + buildPlaces.keySet());
 				}else{
-					Bukkit.broadcastMessage("SIZE" + buildPlaces.size() + " NAME" + buildPlaces.values());
-					
-					BlockQueue test = new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
-					player.sendMessage("SUCCESS, BUILDING" + buildPlaces.size());
-					return true;
+					if(player.getLocation().getWorld().toString().contains("test")){
+						if(MoneyUtils.hasEnoughMoney(player, buildPlaces.get(args[0]).cost)){
+							if(TownyUtils.isTownOwner(TownyUtils.getTownAtLocation(player.getLocation()), player)){
+								MoneyUtils.withdraw(player, buildPlaces.get(args[0]).cost);
+								MoneyUtils.deposit(player.getName(), buildPlaces.get(args[0]).cost/2);
+								MoneyUtils.deposit("realmtaxs", buildPlaces.get(args[0]).cost/2);
+								BlockQueue test = new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
+								player.sendMessage("SUCCESS, BUILDING");
+								return true;
+							}else{
+								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (Plot owner coming soon)");
+							}
+						}else{
+							player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY, YOU NEED $" +buildPlaces.get(args[0]).cost);
+						}
+					}else{
+						player.sendMessage(ChatColor.RED + "CANNOT BUILD IN THIS WORLD, PLEASE GO TO YOUR TOWN!");
+					}
 				}
+			}else{
+				player.sendMessage(ChatColor.RED + "PLEASE ADD A BUILD NAME AFTER /CONSTRUCT");
 			}
 		}
 		return false;

@@ -1,12 +1,15 @@
 package crehop;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 public class BuildPlace {
@@ -17,36 +20,49 @@ public class BuildPlace {
 	int yMin;
 	int yMax;
 	int multiplier;
-	World world;
+	boolean forSale = false;
 	String name;
+	World world;
+	Location chunkLocation;
 	Chunk chunk;
 	String owner;
 	int cost;
+	Sign sign;
 	
-	public BuildPlace(Chunk chunk, int multiplier, String name, Player owner){
+	public BuildPlace(Location chunkLocation, int multiplier, String name, String owner, boolean load, int cost){
 		if(multiplier < 1){
 			this.multiplier = 1;
 		}
 		else{
 			this.multiplier = multiplier;
-			Bukkit.broadcastMessage("MULTIPLIER SET TO = " + multiplier);
 		}
-		Bukkit.broadcastMessage("MULTIPLIER = " + this.multiplier);
-		this.owner = owner.getName();
+		this.chunkLocation = chunkLocation;
+		this.owner = owner;
+		this.chunk = chunkLocation.getChunk();
 		xMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockX();
 		xMax = xMin + (16 * this.multiplier) - 1;
 		zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ();
 		zMax = zMin + (16 * this.multiplier) - 1;
 		yMin = 3;
 		yMax = yMin + (16 * this.multiplier) - 1;
+		this.cost = cost;
 		this.world = chunk.getWorld();
 		this.name = name;
-		this.chunk = chunk;
 		this.multiplier = multiplier;
-		this.buildOutline();
+		if(!load){
+			this.buildOutline();
+		}
+		this.sign = this.getSign();
+		this.setSetupSign();
 		Main.buildPlaces.put(this.name, this);
 		Main.placesCheck.add(this);
-		Bukkit.broadcastMessage("BUILDPLACE " + name + " CREATED!");
+	}
+
+	private void setSetupSign() {
+		setSignLine(0,ChatColor.GREEN + this.name);
+		setSignLine(1,ChatColor.RED + "" + this.cost);
+		//setSignLine(2,this.forSale);
+		setSignLine(3,this.owner);
 	}
 
 	public Location getSignLocation() {
@@ -103,5 +119,23 @@ public class BuildPlace {
 
 	public String getOwner() {
 		return this.owner;
+	}
+
+	public String getID() {
+		return name;
+	}
+	public Sign getSign(){
+		if(this.getSignLocation().getBlock() instanceof Sign){
+			return (Sign)this.getSignLocation().getBlock().getState();
+		}else{
+			Block block = this.getSignLocation().getBlock();
+			block.setType(Material.SIGN_POST);
+			return (Sign)this.getSignLocation().getBlock().getState();
+		}
+	}
+	public void setSignLine(int line, String string){
+		Sign sign = getSign();
+		sign.setLine(line, string);
+		sign.update();
 	}
 }

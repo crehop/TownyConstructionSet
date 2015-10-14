@@ -67,9 +67,10 @@ public class BuildUtils {
 				int cost = 10000 * multiplier;
 				if(MoneyUtils.hasEnoughMoney(player, cost)){
 					Bukkit.broadcastMessage(ChatColor.RED + "MULTIPLIER INITIAL SET" + multiplier);
-					BuildPlace build = new BuildPlace(chunk, multiplier, name, player);
+					BuildPlace build = new BuildPlace(chunk.getBlock(0, 0, 0).getLocation(), multiplier, name, player.getName(), false, 10000);
 					build.setCost(cost);
 					MoneyUtils.withdraw(player,cost);
+					SaveLoad.storeData("StoredLocations.txt");
 					return true;
 				}else{
 					player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY: please find more Money, you need: $" + cost + " to have a buildspace!");
@@ -87,8 +88,8 @@ public class BuildUtils {
 		ID = (ID + 1);
 		return ID;
 	}
-	public void syncID(int newID){
-		this.ID = newID;
+	public static void syncID(){
+		ID = (ID + 1);
 	}
 	public static BuildPlace getBuildPlace(Location location){
 		for(BuildPlace place:Main.placesCheck){
