@@ -46,7 +46,6 @@ public class EventListener implements Listener{
 				}else{
 					event.setCancelled(true);
 				}
-				Bukkit.broadcastMessage("PLACE CONFIRMED!" + place.getOwner());
 			}
 		}
 	}
@@ -64,7 +63,6 @@ public class EventListener implements Listener{
 			}else{
 				BuildPlace place = BuildUtils.getBuildPlace(event.getBlock().getLocation());
 				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName())){
-					Bukkit.broadcastMessage("PLACE CONFIRMED!" + place.getOwner());
 				}else{
 					event.setCancelled(true);
 				}

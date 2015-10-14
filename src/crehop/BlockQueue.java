@@ -39,6 +39,11 @@ public class BlockQueue {
 		this.sizeMultiplier = sizeMultiplier;
 		this.copyChunk = copyChunk;
 		this.newChunk = newChunk;
+		if(this.copyChunk.isLoaded() == false){
+			this.copyChunk.load();
+		}else if(this.newChunk.isLoaded() == false){
+			this.newChunk.load();
+		}
 		xCopyChunk = (int) this.copyChunk.getBlock(0, 1, 0).getLocation().getX();
 		zCopyChunk = (int) this.copyChunk.getBlock(0, 1, 0).getLocation().getZ();
 		yCopyChunk = 0;
@@ -46,8 +51,6 @@ public class BlockQueue {
 		zNewChunk = (int) this.newChunk.getBlock(0, 1, 0).getLocation().getZ();
 		yNewChunk = yLevelPasteLocation;
 		
-		Bukkit.broadcastMessage("COPYCHUNK X = " +  xCopyChunk + " Z = " + zCopyChunk);
-		Bukkit.broadcastMessage("NEWCHUNK X = " +  xNewChunk + " Z = " + zNewChunk);
 		this.resetCopyChunkX();
 		this.resetCopyChunkY();
 		this.resetCopyChunkZ();
@@ -59,7 +62,6 @@ public class BlockQueue {
 		XCopySize = this.XCopyChunk.size();
 		ZNewSize = this.ZNewChunk.size();
 		XNewSize = this.XNewChunk.size();
-		Bukkit.broadcastMessage(this.getTotalBlocksInQueue() + " TOTAL BLOCKS ADDED");
 		Main.activeQueues.add(this);
 	}
 	private void startUp() {
@@ -98,7 +100,6 @@ public class BlockQueue {
 				if(XCopyChunk.size() > 0 && ZCopyChunk.size() > 0 && YCopyChunk.size() > 0)
 				{
 					toBeCopied = copyChunk.getWorld().getBlockAt(XCopyChunk.get(0),YCopyChunk.get(0),ZCopyChunk.get(0));
-					//Bukkit.broadcastMessage("COPYBLOCK LOCATION = X " + XCopyChunk.get(0) + ",Y " + YCopyChunk.get(0) + ",Z " + ZCopyChunk.get(0));
 					if(this.YCopyChunk.size() > 0)
 					{
 						if(ZCopyChunk.size() > 1)
@@ -122,7 +123,6 @@ public class BlockQueue {
 						this.XCopyChunk.clear();
 					}
 					toBePasted = newChunk.getWorld().getBlockAt(XNewChunk.get(0),YNewChunk.get(0),ZNewChunk.get(0));
-					//Bukkit.broadcastMessage("NEWBLOCK LOCATION = X " + XNewChunk.get(0) + ",Y " + YNewChunk.get(0) + ",Z " + ZNewChunk.get(0));
 					if(this.YNewChunk.size() > 0){
 						if(ZNewChunk.size() > 1){
 							this.ZNewChunk.remove(0);
@@ -169,7 +169,6 @@ public class BlockQueue {
 				else{
 					Main.activeQueues.remove(this);
 					if(Main.debug){
-						Bukkit.broadcastMessage("QUEUE CLOSED!");
 					}
 					break;
 				}

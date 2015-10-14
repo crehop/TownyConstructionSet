@@ -1,23 +1,15 @@
 package utils;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import com.palmergames.bukkit.towny.Towny;
-import com.palmergames.bukkit.towny.command.TownyAdminCommand;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyObject;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
-import com.palmergames.bukkit.towny.object.TownyWorld;
 
 import crehop.BuildPlace;
 import crehop.Main;
@@ -43,6 +35,7 @@ public class TownyUtils {
 					resident = res;
 				}
 			} catch (TownyException e) {
+				player.sendMessage(ChatColor.RED + "YOU MUST BE IN A TOWN TO BUILD!");
 			}
 		}
 		if(isResident){

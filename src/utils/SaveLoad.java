@@ -175,7 +175,6 @@ public class SaveLoad
 		String fileName = file;
 		File dir = new File(Main.class.getProtectionDomain().getCodeSource().getLocation().getPath().replaceAll("%20", " ").replaceAll( ".jar", ""));
 		File actualFile = new File (dir, fileName);
-		Bukkit.broadcastMessage(fileName + dir.toString() + dir.canRead() + actualFile.canRead() + actualFile.canWrite() 	+	actualFile.getAbsolutePath());
 		try
 		{
 			FileWriter fileWriter = new FileWriter(actualFile);

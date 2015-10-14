@@ -23,6 +23,6 @@ public class MoneyUtils {
 	}
 	@SuppressWarnings("deprecation")
 	public static void deposit(String name, int amount) {
-		money.depositPlayer("realmtaxs", amount);
+		money.depositPlayer(name, amount);
 	}
 }

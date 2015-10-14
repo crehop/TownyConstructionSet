@@ -21,6 +21,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+
 import utils.BuildUtils;
 import utils.MoneyUtils;
 import utils.SaveLoad;
@@ -73,11 +75,9 @@ public class Main extends JavaPlugin{
 		    		}
 		    		activeQueues.get(tick).tickBuilder();
 		    		if(debug){
-		    			Bukkit.broadcastMessage(ChatColor.GREEN + "ACTIVE QUEUES FOUND: " + activeQueues.size() + " Atempting tick on queue: " + (tick + 1));
 		    		}
 		    	}
 		    	else if(debug){
-		    		//Bukkit.broadcastMessage(ChatColor.RED + "NO QUEUES" + activeQueues.size());
 		    	}
 		    }
 		}, 0L, queueSpeed);
@@ -126,6 +126,12 @@ public class Main extends JavaPlugin{
 				return false;
 			}else{
 				if(args.length == 0){
+					for(BuildPlace place:placesCheck){
+						if(place.getOwner().equals(player.getName())){
+							player.sendMessage(ChatColor.RED + "YOU CAN ONLY HAVE 1 BUILD PLOT FOR NOW!");
+							return true;
+						}
+					}
 					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, ""+BuildUtils.getID());
 				}
 				if(args.length == 1 && args[0].equalsIgnoreCase("list")){
@@ -142,12 +148,18 @@ public class Main extends JavaPlugin{
 				}else{
 					if(player.getLocation().getWorld().toString().contains("test")){
 						if(MoneyUtils.hasEnoughMoney(player, buildPlaces.get(args[0]).cost)){
-							if(TownyUtils.isTownOwner(TownyUtils.getTownAtLocation(player.getLocation()), player)){
+							if(TownyUniverse.isWilderness(location.getBlock())){
+								player.sendMessage(ChatColor.RED + "YOU MUST BE IN A TOWN TO BUILD!");
+								return true;
+							}
+							if(TownyUtils.isTownOwner(
+									TownyUtils.getTownAtLocation(
+											player.getLocation()), player)){
+								float split = (buildPlaces.get(args[0]).cost/2);
 								MoneyUtils.withdraw(player, buildPlaces.get(args[0]).cost);
-								MoneyUtils.deposit(player.getName(), buildPlaces.get(args[0]).cost/2);
-								MoneyUtils.deposit("realmtaxs", buildPlaces.get(args[0]).cost/2);
+								MoneyUtils.deposit("realmtaxs", (int)split);
+								MoneyUtils.deposit(buildPlaces.get(args[0]).owner, (int)split);
 								BlockQueue test = new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
-								player.sendMessage("SUCCESS, BUILDING");
 								return true;
 							}else{
 								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (Plot owner coming soon)");
@@ -172,7 +184,6 @@ public class Main extends JavaPlugin{
         if (economyProvider != null)
         {
             economy = economyProvider.getProvider();
-            Bukkit.broadcastMessage("ECONOMY SET UP!");
         }
 
         return (economy != null);

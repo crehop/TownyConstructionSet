@@ -43,7 +43,6 @@ public class BlockUtils {
 			}
 		} catch (MaxChangedBlocksException e) {
 			if(Main.debug){
-				Bukkit.broadcastMessage("PASTE FAILED");
 			}
 		} 
 		

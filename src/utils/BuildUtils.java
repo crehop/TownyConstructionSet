@@ -24,7 +24,6 @@ public class BuildUtils {
 		int xMax = xMin + (16 * multiplier) + 16;
 		int zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ() - 16;
 		int zMax = zMin + (16 * multiplier) + 16;	
-		Bukkit.broadcastMessage("XMIN = " + xMin + " XMAX = " + xMax + "ZMIN = " + zMin + " ZMAX = " + zMax + "YCHECK = " + Main.yCheckHeight);
 		check = false;
 		for(int x = xMin; x <= xMax; x++){
 			for(int z = zMin; z <= zMax; z++){
@@ -62,11 +61,10 @@ public class BuildUtils {
 		return true;
 	}
 	public static boolean setupBuildPlace(Player player, Chunk chunk, int multiplier,String name){
-		if(chunk.getWorld().getName().equalsIgnoreCase("build")){
+		if(chunk.getWorld().getName().contains("build")){
 			if(enoughRoomForBuildPlace(chunk,multiplier,player)){
 				int cost = 10000 * multiplier;
 				if(MoneyUtils.hasEnoughMoney(player, cost)){
-					Bukkit.broadcastMessage(ChatColor.RED + "MULTIPLIER INITIAL SET" + multiplier);
 					BuildPlace build = new BuildPlace(chunk.getBlock(0, 0, 0).getLocation(), multiplier, name, player.getName(), false, 10000);
 					build.setCost(cost);
 					MoneyUtils.withdraw(player,cost);
