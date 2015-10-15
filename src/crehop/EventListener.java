@@ -63,6 +63,10 @@ public class EventListener implements Listener{
 			}else{
 				BuildPlace place = BuildUtils.getBuildPlace(event.getBlock().getLocation());
 				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName())){
+					if(event.getBlock().getLocation().getBlock().getY() > (16 * place.getMultiplier()) + 3){
+						event.setCancelled(true);
+						event.getPlayer().sendMessage(ChatColor.RED + "YOU HAVE REACHED THE TOP OF YOUR BUILDPLOT! CANNOT BUILD THIS HIGH!");
+					}
 				}else{
 					event.setCancelled(true);
 				}

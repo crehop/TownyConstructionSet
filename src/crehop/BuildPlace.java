@@ -44,7 +44,7 @@ public class BuildPlace {
 		zMin = chunk.getBlock(0, Main.yCheckHeight, 0).getLocation().getBlockZ();
 		zMax = zMin + (16 * this.multiplier) - 1;
 		yMin = 3;
-		yMax = yMin + (16 * this.multiplier) - 1;
+		yMax = yMin + ((16 * this.multiplier) + Main.yCheckHeight);
 		this.cost = cost;
 		this.world = chunk.getWorld();
 		this.name = name;
