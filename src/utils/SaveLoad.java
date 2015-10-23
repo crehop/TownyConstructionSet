@@ -125,7 +125,8 @@ public class SaveLoad
 					int multiplier = Integer.parseInt(st.nextToken());
 					String name = st.nextToken();
 					
-					new BuildPlace(loc, multiplier, name, owner, true, cost);
+					BuildPlace build = new BuildPlace(loc, multiplier, name, owner, true, cost);
+					build.buildOutline();
 					BuildUtils.syncID();
 					if(loc.getBlock() == null)
 					{
