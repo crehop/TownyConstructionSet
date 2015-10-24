@@ -1,5 +1,4 @@
 package crehop;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -9,6 +8,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+
+import utils.SaveLoad;
 
 public class BuildPlace {
 	int xMin;
@@ -26,6 +27,7 @@ public class BuildPlace {
 	String owner;
 	int cost;
 	Sign sign;
+	private boolean lockout;
 	
 	public BuildPlace(Location chunkLocation, int multiplier, String name, String owner, boolean load, int cost){
 		if(multiplier < 1){
@@ -105,15 +107,18 @@ public class BuildPlace {
 			block.setType(Material.WOOL);
 			block.setData(DyeColor.RED.getData());
 		}
+		SaveLoad.storeData("StoredLocations.txt");
 	}
 	@SuppressWarnings("deprecation")
 	public void destroy(){
-		for(int x = xMin; x <= xMax; x++){
-			for(int z = zMin; z <= zMax; z++){
-				for(int y = yMin - 3; y <= yMax; y++){
+		for(int x = xMax; x >= xMin; x--){
+			for(int z = zMax; z >= zMin; z--){
+				for(int y = yMax; y >= yMin - 3; y--){
 					Block block = world.getBlockAt(x, y ,z);
-					if(y < 3){
+					if(y <= 3){
 						block.setType(Material.GRASS);
+					}if(y == 0){
+						block.setType(Material.BEDROCK);
 					}
 					else{
 						block.setType(Material.AIR);
@@ -157,5 +162,51 @@ public class BuildPlace {
 		Sign sign = getSign();
 		sign.setLine(line, string);
 		sign.update();
+	}
+
+	public boolean isLockedout() {
+		return lockout;
+	}
+
+	public void setLockout(boolean lockout) {
+		this.lockout = lockout;
+	}
+	public void unlock() {
+		this.setLockout(false);
+		for(int x = xMax; x >= xMin; x--){
+			for(int z = zMax; z >= zMin; z--){
+				for(int y = yMax; y >= yMin -3; y--){
+					Block block = world.getBlockAt(x, y ,z);
+					if(block.getType() == Material.SIGN_POST || block.getType() == Material.WOOL){
+					}
+					else if(y <= 3 && x == xMax || y <= 3 && x == xMin || y <= 3 && z == zMax || y <= 3 && z == zMin){
+						block.setType(Material.GRASS);
+					}else if(y == 0){
+						block.setType(Material.BEDROCK);
+					}else if(x == xMax || x == xMin || z == zMax || z == zMin || y == yMax){
+						block.setType(Material.AIR);
+					}
+				}
+			}			
+		}
+	}
+	public void lock() {
+		this.setLockout(true);
+		for(int x = xMax; x >= xMin; x--){
+			for(int z = zMax; z >= zMin; z--){
+				for(int y = yMax; y >= yMin -3; y--){
+					Block block = world.getBlockAt(x, y ,z);
+					if(block.getType() == Material.SIGN_POST || block.getType() == Material.WOOL){
+					}
+					else if(y <= 3 && x == xMax || y <= 3 && x == xMin || y <= 3 && z == zMax || y <= 3 && z == zMin){
+						block.setType(Material.GRASS);
+					}else if(y == 0){
+						block.setType(Material.BEDROCK);
+					}else if(x == xMax || x == xMin || z == zMax || z == zMin || y == yMax){
+						block.setType(Material.BARRIER);
+					}
+				}
+			}			
+		}
 	} 
 }

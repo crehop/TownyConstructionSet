@@ -126,57 +126,76 @@ public class Main extends JavaPlugin{
 			if(player.getWorld().getBlockAt(location).getType().toString().contains("BEDROCK")){
 				player.sendMessage(ChatColor.RED + "CANNOT BUILD ON THE KINGS ROAD!");
 				return false;
-			}else{
-				if(args.length == 0){
-					for(BuildPlace place:placesCheck){
-						if(place.getOwner().equals(player.getName())){
-							player.sendMessage(ChatColor.RED + "YOU CAN ONLY HAVE 1 BUILD PLOT FOR NOW!");
-							return true;
-						}
+			}
+			if(args.length == 0){
+				for(BuildPlace place:placesCheck){
+					if(place.getOwner().equals(player.getName())){
+						player.sendMessage(ChatColor.RED + "YOU CAN ONLY HAVE 1 BUILD PLOT FOR NOW!");
+						return true;
 					}
-					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 2, ""+BuildUtils.getID());
 				}
-				if(args.length == 1 && args[0].equalsIgnoreCase("list")){
-					player.sendMessage("BUILD SIZE :" + buildPlaces.size());
-					player.sendMessage("" + buildPlaces.values());
+				BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 2, ""+BuildUtils.getID());
+			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("list")){
+				player.sendMessage("BUILD SIZE :" + buildPlaces.size());
+				player.sendMessage("" + buildPlaces.values());
+			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("destroy")){
+				for(BuildPlace place:placesCheck){
+					if(place.owner.equalsIgnoreCase(player.getName())){
+						place.destroy();
+						player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
+						break;
+					}
 				}
-				if(args.length == 1 && args[0].equalsIgnoreCase("destroy")){
+			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("lockout")){
+				for(BuildPlace place:placesCheck){
+					if(place.getOwner().equalsIgnoreCase(player.getName())){
+						if(place.isLockedout()){
+							place.setLockout(false);
+							place.unlock();
+						}else{
+							place.lock();
+							for(Player player2:Bukkit.getOnlinePlayers()){
+								if(BuildUtils.getBuildPlace(player2.getLocation()).getID().equalsIgnoreCase(place.getID()) && (!(place.owner.equalsIgnoreCase(player2.getName())))){
+									teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
+									player2.teleport(teleport);
+									player2.sendMessage(ChatColor.RED + "" + place.getOwner() + " Has removed you and locked the build plot!");
+									player.sendMessage("" + ChatColor.RED + "" + player.getName() + " has beed removed from your plot!");
+								}
+							}
+						}
+						break;
+					}
+				}
+			}	
+			if(args.length == 2 && args[0].equalsIgnoreCase("tp")){
+				if(player.getWorld().toString().contains("build")){
 					for(BuildPlace place:placesCheck){
-						if(place.owner.equalsIgnoreCase(player.getName())){
-							place.destroy();
-							player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
+						if(place.name.equalsIgnoreCase(args[1])){
+							teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
+							player.teleport(teleport);
 							break;
 						}
 					}
+					player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
 				}
-
-				if(args.length == 2 && args[0].equalsIgnoreCase("tp")){
-					if(player.getWorld().toString().contains("build")){
-						for(BuildPlace place:placesCheck){
-							if(place.name.equalsIgnoreCase(args[1])){
-								teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
-								player.teleport(teleport);
-								break;
-							}
-						}
-						player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
-					}
-				}
-				if(args.length == 2 && args[0].equalsIgnoreCase("destroy")){
-					if(player.isOp()){
-						for(BuildPlace place:placesCheck){
-							player.sendMessage("REQUESTED:" + args[1] + " PLACE:" + place.getID());
-							if(place.getID().equalsIgnoreCase(args[1])){
-								player.sendMessage("confirmed!");
-								place.destroy();
-								break;
-							}
-						}
-						player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
-					}
-				}
-				return true;
 			}
+			if(args.length == 2 && args[0].equalsIgnoreCase("destroy")){
+				if(player.isOp()){
+					for(BuildPlace place:placesCheck){
+						player.sendMessage("REQUESTED:" + args[1] + " PLACE:" + place.getID());
+						if(place.getID().equalsIgnoreCase(args[1])){
+							player.sendMessage("confirmed!");
+							place.destroy();
+							break;
+						}
+					}
+					player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
+				}
+			}
+			return true;
 		}
 		if(commandLabel.equalsIgnoreCase("construct")){
 			if(args.length > 0){
