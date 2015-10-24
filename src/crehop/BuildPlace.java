@@ -1,5 +1,6 @@
 package crehop;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
@@ -90,8 +91,10 @@ public class BuildPlace {
 	public void buildOutline(){
 		for(int x = xMin; x <= xMax; x++){
 			for(int z = zMin; z <= zMax; z++){
+				Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
+				block.setType(Material.GRASS);
 				if(x == xMin || x == xMax || z == zMin || z == zMax){
-					Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
+					block = world.getBlockAt(x, Main.yCheckHeight ,z);
 					block.setType(Material.WOOL);
 					block.setData(DyeColor.RED.getData());
 				}
@@ -102,6 +105,26 @@ public class BuildPlace {
 			block.setType(Material.WOOL);
 			block.setData(DyeColor.RED.getData());
 		}
+	}
+	@SuppressWarnings("deprecation")
+	public void destroy(){
+		for(int x = xMin; x <= xMax; x++){
+			for(int z = zMin; z <= zMax; z++){
+				for(int y = yMin - 3; y <= yMax; y++){
+					Block block = world.getBlockAt(x, y ,z);
+					if(y < 3){
+						block.setType(Material.GRASS);
+					}
+					else{
+						block.setType(Material.AIR);
+					}
+				}
+			}			
+		}
+		Main.buildPlaces.remove(this.getID());
+		Main.placesCheck.remove(this);
+		Bukkit.broadcastMessage("buildPlaces" + Main.buildPlaces.size());
+		Bukkit.broadcastMessage("placesCheck" + Main.placesCheck.size());
 	}
 	public int getMultiplier(){
 		return this.multiplier;
@@ -134,5 +157,5 @@ public class BuildPlace {
 		Sign sign = getSign();
 		sign.setLine(line, string);
 		sign.update();
-	}
+	} 
 }

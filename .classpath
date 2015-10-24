@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="Lib/Towny.jar"/>
 	<classpathentry kind="lib" path="Lib/WorldEdit.jar"/>
 	<classpathentry kind="lib" path="Lib/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Tu/Desktop/Minecraft/Minecraft Plugins/craftbukkit-1.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

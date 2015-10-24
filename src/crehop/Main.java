@@ -41,6 +41,8 @@ public class Main extends JavaPlugin{
 	public static HashMap<String,BuildPlace> buildPlaces = new HashMap<String,BuildPlace>();
     public static Permission perms = null;
     public static Chat chat = null;
+    public static Location teleport;
+
 
  
  @Override
@@ -132,11 +134,46 @@ public class Main extends JavaPlugin{
 							return true;
 						}
 					}
-					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 1, ""+BuildUtils.getID());
+					BuildUtils.setupBuildPlace(player, player.getLocation().getChunk(), 2, ""+BuildUtils.getID());
 				}
 				if(args.length == 1 && args[0].equalsIgnoreCase("list")){
 					player.sendMessage("BUILD SIZE :" + buildPlaces.size());
 					player.sendMessage("" + buildPlaces.values());
+				}
+				if(args.length == 1 && args[0].equalsIgnoreCase("destroy")){
+					for(BuildPlace place:placesCheck){
+						if(place.owner.equalsIgnoreCase(player.getName())){
+							place.destroy();
+							player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
+							break;
+						}
+					}
+				}
+
+				if(args.length == 2 && args[0].equalsIgnoreCase("tp")){
+					if(player.getWorld().toString().contains("build")){
+						for(BuildPlace place:placesCheck){
+							if(place.name.equalsIgnoreCase(args[1])){
+								teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
+								player.teleport(teleport);
+								break;
+							}
+						}
+						player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
+					}
+				}
+				if(args.length == 2 && args[0].equalsIgnoreCase("destroy")){
+					if(player.isOp()){
+						for(BuildPlace place:placesCheck){
+							player.sendMessage("REQUESTED:" + args[1] + " PLACE:" + place.getID());
+							if(place.getID().equalsIgnoreCase(args[1])){
+								player.sendMessage("confirmed!");
+								place.destroy();
+								break;
+							}
+						}
+						player.sendMessage(ChatColor.RED + "BUILD DESTROYED!");
+					}
 				}
 				return true;
 			}
