@@ -159,7 +159,7 @@ public class Main extends JavaPlugin{
 								MoneyUtils.withdraw(player, buildPlaces.get(args[0]).cost);
 								MoneyUtils.deposit("realmtaxs", (int)split);
 								MoneyUtils.deposit(buildPlaces.get(args[0]).owner, (int)split);
-								BlockQueue test = new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
+								new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
 								return true;
 							}else{
 								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (Plot owner coming soon)");

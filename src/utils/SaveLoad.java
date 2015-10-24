@@ -56,7 +56,8 @@ public class SaveLoad
 	    	InputStream defConfigStream = mb.getResource(file);
 	    	if (defConfigStream != null) 
 	    	{
-	    		YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+	    		@SuppressWarnings("deprecation")
+				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	    		DataConfig.setDefaults(defConfig);
 	    	}
 	    	getCustomConfig().options().copyDefaults(true);
