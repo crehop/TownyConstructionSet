@@ -11,6 +11,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import utils.BuildUtils;
 
@@ -27,6 +29,30 @@ public class EventListener implements Listener{
 	public void Event1 (PlayerInteractEntityEvent event){
 	}
 	
+	@EventHandler
+	public void tele(PlayerTeleportEvent e){
+		if(e.getFrom().getWorld().toString().contains("build")){
+			if(!(e.getTo().getWorld().toString().equalsIgnoreCase(e.getFrom().getWorld().toString()))){
+				for(BuildPlace place:Main.placesCheck){
+					if(place.getOwner().equalsIgnoreCase(e.getPlayer().getName())){
+						if(place.isLockedout()){
+							place.unlock();
+						}
+					}
+				}
+			}
+		}
+	}
+	@EventHandler
+	public void logoutEvent(PlayerQuitEvent e){
+		for(BuildPlace place:Main.placesCheck){
+			if(place.getOwner().equalsIgnoreCase(e.getPlayer().getName())){
+				if(place.isLockedout()){
+					place.unlock();
+				}
+			}
+		}
+	}
 	@EventHandler
 	public void blockBreakEvent(BlockBreakEvent event){
 		if(event.getBlock().getWorld().getName().toString().contains("build") && event.getPlayer().isOp() == false){

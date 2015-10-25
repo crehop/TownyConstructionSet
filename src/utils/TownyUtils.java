@@ -20,6 +20,7 @@ public class TownyUtils {
 		try {
 			town = TownyUniverse.getTownBlock(loc).getTown();
 		} catch (NotRegisteredException e) {
+		}catch(NullPointerException e2){
 		}
 		return town;
 	}
@@ -28,6 +29,7 @@ public class TownyUtils {
 		boolean canbuild = false;
 		boolean isResident = false;
 		Resident resident = null;
+		try{
 		for(Resident res:town.getResidents()){
 			try {
 				if(TownyUniverse.getPlayer(res).getName().equals(player.getName())){
@@ -44,6 +46,9 @@ public class TownyUtils {
 			}
 		}
 		return canbuild;
+		}catch(NullPointerException e2){
+			return false;
+		}
 	}
 	
 	public static boolean isKing(Player player){

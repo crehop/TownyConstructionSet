@@ -42,6 +42,7 @@ public class Main extends JavaPlugin{
     public static Permission perms = null;
     public static Chat chat = null;
     public static Location teleport;
+    public static Location test;
 
 
  
@@ -123,14 +124,24 @@ public class Main extends JavaPlugin{
 		Location location = player.getLocation();
 		location.setY(3);
 		if(commandLabel.equalsIgnoreCase("build")){
-			if(player.getWorld().getBlockAt(location).getType().toString().contains("BEDROCK")){
-				player.sendMessage(ChatColor.RED + "CANNOT BUILD ON THE KINGS ROAD!");
-				return false;
-			}
 			if(args.length == 0){
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build place" + ChatColor.AQUA + " in the build world builds a plot");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/construct #" + ChatColor.AQUA + " builds the plot at number #");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build lockout" + ChatColor.AQUA + " makes your lot private/kicks people out");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build lockout" + ChatColor.AQUA + " if your plot is locked, unlocks it!");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build tp" + ChatColor.AQUA + " in the build world tps to your plot");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build tp #" + ChatColor.AQUA + " in the build world tps a plot at #");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build destroy" + ChatColor.RED + " DESTROYS YOUR PLOT!");
+			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("place")){
+				if(player.getWorld().getBlockAt(location).getType().toString().contains("BEDROCK")){
+					player.sendMessage(ChatColor.RED + "CANNOT BUILD ON THE KINGS ROAD!");
+					return false;
+				}
 				for(BuildPlace place:placesCheck){
-					if(place.getOwner().equals(player.getName())){
-						player.sendMessage(ChatColor.RED + "YOU CAN ONLY HAVE 1 BUILD PLOT FOR NOW!");
+					if(player.isOp()){
+					}else if(place.getOwner().equals(player.getName())){
+						player.sendMessage(ChatColor.RED + "YOU CAN ONLY HAVE 1 BUILD PLOT FOR NOW!!");
 						return true;
 					}
 				}
@@ -149,20 +160,37 @@ public class Main extends JavaPlugin{
 					}
 				}
 			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("tp")){
+				if(player.getWorld().toString().contains("build")){
+					for(BuildPlace place:placesCheck){
+						if(place.owner.equalsIgnoreCase(player.getName())){
+							teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
+							player.teleport(teleport);
+							return true;
+						}
+					}
+					player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
+				}
+			}
 			if(args.length == 1 && args[0].equalsIgnoreCase("lockout")){
 				for(BuildPlace place:placesCheck){
 					if(place.getOwner().equalsIgnoreCase(player.getName())){
 						if(place.isLockedout()){
-							place.setLockout(false);
 							place.unlock();
+							player.sendMessage(ChatColor.RED + "PLOT UNLOCKED!");
 						}else{
 							place.lock();
+							player.sendMessage(ChatColor.RED + "PLOT LOCKED DOWN AND PLAYERS KICKED!");
 							for(Player player2:Bukkit.getOnlinePlayers()){
+								try{
 								if(BuildUtils.getBuildPlace(player2.getLocation()).getID().equalsIgnoreCase(place.getID()) && (!(place.owner.equalsIgnoreCase(player2.getName())))){
 									teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
 									player2.teleport(teleport);
 									player2.sendMessage(ChatColor.RED + "" + place.getOwner() + " Has removed you and locked the build plot!");
-									player.sendMessage("" + ChatColor.RED + "" + player.getName() + " has beed removed from your plot!");
+									if(!(place.owner.equalsIgnoreCase(player.getName())))player.sendMessage("" + ChatColor.RED + "" + player.getName() + " has beed removed from your plot!");
+								}
+								}catch(NullPointerException e){
+									
 								}
 							}
 						}
@@ -176,7 +204,7 @@ public class Main extends JavaPlugin{
 						if(place.name.equalsIgnoreCase(args[1])){
 							teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
 							player.teleport(teleport);
-							break;
+							return true;
 						}
 					}
 					player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
@@ -208,27 +236,34 @@ public class Main extends JavaPlugin{
 								player.sendMessage(ChatColor.RED + "YOU MUST BE IN A TOWN TO BUILD!");
 								return true;
 							}
-							if(TownyUtils.isTownOwner(
-									TownyUtils.getTownAtLocation(
-											player.getLocation()), player)){
-								float split = (buildPlaces.get(args[0]).cost/2);
-								MoneyUtils.withdraw(player, buildPlaces.get(args[0]).cost);
-								MoneyUtils.deposit("realmtaxs", (int)split);
-								MoneyUtils.deposit(buildPlaces.get(args[0]).owner, (int)split);
-								new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),1, player.getLocation().getBlockY() -4);
-								return true;
+							test = player.getLocation().getBlock().getChunk().getBlock(0, 0, 0).getLocation();
+							if(TownyUtils.isTownOwner(TownyUtils.getTownAtLocation(test), player )) {
+								test.setX(test.getX() + 16 * buildPlaces.get(args[0]).getMultiplier() - 1);
+								if(TownyUtils.isTownOwner(TownyUtils.getTownAtLocation(test), player )) {
+									test.setZ(test.getZ() + 16 * buildPlaces.get(args[0]).getMultiplier() - 1);
+									if(TownyUtils.isTownOwner(TownyUtils.getTownAtLocation(test), player )) {
+										float split = (buildPlaces.get(args[0]).cost/2);
+										MoneyUtils.withdraw(player, buildPlaces.get(args[0]).cost);
+										MoneyUtils.deposit("realmtaxs", (int)split);
+										MoneyUtils.deposit(buildPlaces.get(args[0]).owner, (int)split);
+										new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),buildPlaces.get(args[0]).getMultiplier(), player.getLocation().getBlockY() -4);
+										return true;
+									}else{
+										player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+									}
+								}else{
+									player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+								}
 							}else{
-								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (Plot owner coming soon)");
+								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
 							}
 						}else{
-							player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY, YOU NEED $" +buildPlaces.get(args[0]).cost);
-						}
+							player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+						}	
 					}else{
-						player.sendMessage(ChatColor.RED + "CANNOT BUILD IN THIS WORLD, PLEASE GO TO YOUR TOWN!");
+						player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
 					}
 				}
-			}else{
-				player.sendMessage(ChatColor.RED + "PLEASE ADD A BUILD NAME AFTER /CONSTRUCT");
 			}
 		}
 		return false;

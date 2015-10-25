@@ -99,6 +99,9 @@ public class BlockQueue {
 				if(XCopyChunk.size() > 0 && ZCopyChunk.size() > 0 && YCopyChunk.size() > 0)
 				{
 					toBeCopied = copyChunk.getWorld().getBlockAt(XCopyChunk.get(0),YCopyChunk.get(0),ZCopyChunk.get(0));
+					if(toBeCopied.getType() == Material.BARRIER){
+						toBeCopied.setType(Material.AIR);
+					}
 					if(this.YCopyChunk.size() > 0)
 					{
 						if(ZCopyChunk.size() > 1)

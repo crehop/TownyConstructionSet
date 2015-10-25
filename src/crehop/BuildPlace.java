@@ -12,13 +12,13 @@ import org.bukkit.block.Sign;
 import utils.SaveLoad;
 
 public class BuildPlace {
-	int xMin;
-	int xMax;
-	int zMin;
-	int zMax;
-	int yMin;
-	int yMax;
-	int multiplier;
+	private int xMin;
+	private int xMax;
+	private int zMin;
+	private int zMax;
+	private int yMin;
+	private int yMax;
+	private int multiplier;
 	boolean forSale = false;
 	String name;
 	World world;
@@ -109,7 +109,6 @@ public class BuildPlace {
 		}
 		SaveLoad.storeData("StoredLocations.txt");
 	}
-	@SuppressWarnings("deprecation")
 	public void destroy(){
 		for(int x = xMax; x >= xMin; x--){
 			for(int z = zMax; z >= zMin; z--){
@@ -117,10 +116,9 @@ public class BuildPlace {
 					Block block = world.getBlockAt(x, y ,z);
 					if(y <= 3){
 						block.setType(Material.GRASS);
-					}if(y == 0){
+					}else if(y == 0){
 						block.setType(Material.BEDROCK);
-					}
-					else{
+					}else if (y > 3){
 						block.setType(Material.AIR);
 					}
 				}
@@ -128,8 +126,6 @@ public class BuildPlace {
 		}
 		Main.buildPlaces.remove(this.getID());
 		Main.placesCheck.remove(this);
-		Bukkit.broadcastMessage("buildPlaces" + Main.buildPlaces.size());
-		Bukkit.broadcastMessage("placesCheck" + Main.placesCheck.size());
 	}
 	public int getMultiplier(){
 		return this.multiplier;
@@ -208,5 +204,54 @@ public class BuildPlace {
 				}
 			}			
 		}
+	}
+
+	public int getxMin() {
+		return xMin;
+	}
+
+	public void setxMin(int xMin) {
+		this.xMin = xMin;
+	}
+
+	public int getxMax() {
+		return xMax;
+	}
+
+	public void setxMax(int xMax) {
+		this.xMax = xMax;
+	}
+
+	public int getzMin() {
+		return zMin;
+	}
+
+	public void setzMin(int zMin) {
+		this.zMin = zMin;
+	}
+
+	public int getzMax() {
+		return zMax;
+	}
+
+	public void setzMax(int zMax) {
+		this.zMax = zMax;
+	}
+
+	public int getyMin() {
+		return yMin;
+	}
+
+	public void setyMin(int yMin) {
+		this.yMin = yMin;
+	}
+
+	public int getyMax() {
+		return yMax;
+	}
+
+	public void setyMax(int yMax) {
+		this.yMax = yMax;
 	} 
+	
 }

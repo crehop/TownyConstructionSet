@@ -128,7 +128,9 @@ public class SaveLoad
 					
 					BuildPlace build = new BuildPlace(loc, multiplier, name, owner, true, cost);
 					build.buildOutline();
-					BuildUtils.syncID();
+					if(BuildUtils.checkID() < Integer.parseInt(name)){
+						BuildUtils.fixID(Integer.parseInt(name));
+					}
 					if(loc.getBlock() == null)
 					{
 						continue;

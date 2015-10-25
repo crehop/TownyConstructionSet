@@ -85,8 +85,11 @@ public class BuildUtils {
 		ID = (ID + 1);
 		return ID;
 	}
-	public static void syncID(){
-		ID = (ID + 1);
+	public static int checkID(){
+		return ID;
+	}
+	public static void fixID(int i){
+		ID = i;
 	}
 	public static BuildPlace getBuildPlace(Location location){
 		for(BuildPlace place:Main.placesCheck){
