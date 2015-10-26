@@ -91,6 +91,9 @@ public class EventListener implements Listener{
 					if(event.getBlock().getLocation().getBlock().getY() > (16 * place.getMultiplier()) + 3){
 						event.setCancelled(true);
 						event.getPlayer().sendMessage(ChatColor.RED + "YOU HAVE REACHED THE TOP OF YOUR BUILDPLOT! CANNOT BUILD THIS HIGH!");
+					}else if(event.getBlock().getType()==Material.HOPPER || event.getBlock().getType() == Material.HOPPER_MINECART){
+						event.setCancelled(true);
+						event.getPlayer().sendMessage(ChatColor.RED + "STOP TRYING TO DUPE!");
 					}
 				}else{
 					event.setCancelled(true);
