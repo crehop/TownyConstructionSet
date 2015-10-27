@@ -1,6 +1,7 @@
 package crehop;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
@@ -83,6 +84,11 @@ public class EventListener implements Listener{
 					event.getPlayer().sendMessage(ChatColor.RED + "Cannot place wool or standing signs at this height");
 				}
 			}
+			if(isChest(event.getBlock())){
+				event.getPlayer().sendMessage(ChatColor.RED + "STOP TRYING TO DUPE!");
+			}
+				
+			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
 				event.setCancelled(true);
 			}else{
@@ -100,6 +106,14 @@ public class EventListener implements Listener{
 				}
 			}
 		}
+	private boolean isChest(Block b) {
+		if(b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST || 
+				b.getType() == Material.DISPENSER || b.getType() == Material.HOPPER || b.getType() == Material.HOPPER_MINECART ||
+				b.getType() == Material.DROPPER || b.getType() == Material.BREWING_STAND || b.getType() == Material.BEACON || b.getType() == Material.ARMOR_STAND ||
+				b.getType() == Material.MINECART || b.getType() == Material.FURNACE || b.getType() == Material.ANVIL || b.getType() == Material.MINECART){
+			return true;
+		}
+		return false;
 	}
 	@EventHandler
 	public void chestOpenEvent(InventoryOpenEvent e){

@@ -94,7 +94,6 @@ public class BuildPlace {
 		for(int x = xMin; x <= xMax; x++){
 			for(int z = zMin; z <= zMax; z++){
 				Block block = world.getBlockAt(x, Main.yCheckHeight ,z);
-				block.setType(Material.GRASS);
 				if(x == xMin || x == xMax || z == zMin || z == zMax){
 					block = world.getBlockAt(x, Main.yCheckHeight ,z);
 					block.setType(Material.WOOL);
