@@ -86,8 +86,7 @@ public class EventListener implements Listener{
 			}
 			if(isChest(event.getBlock())){
 				event.getPlayer().sendMessage(ChatColor.RED + "STOP TRYING TO DUPE!");
-			}
-				
+				event.setCancelled(true);
 			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
 				event.setCancelled(true);
@@ -106,6 +105,7 @@ public class EventListener implements Listener{
 				}
 			}
 		}
+	}
 	private boolean isChest(Block b) {
 		if(b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST || 
 				b.getType() == Material.DISPENSER || b.getType() == Material.HOPPER || b.getType() == Material.HOPPER_MINECART ||
