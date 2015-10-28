@@ -60,7 +60,7 @@ public class EventListener implements Listener{
 			if(event.getBlock().getY() <= 5){
 				if(event.getBlock().getType() == Material.WOOL || event.getBlock().getType() == Material.SIGN_POST){
 					event.setCancelled(true);
-					event.getPlayer().sendMessage("Cannot destroy wool or statnding signs at this height");
+					event.getPlayer().sendMessage("Cannot destroy wool or standing signs at this height");
 				}
 			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
