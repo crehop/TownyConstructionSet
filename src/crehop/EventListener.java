@@ -67,7 +67,7 @@ public class EventListener implements Listener{
 				event.setCancelled(true);
 			}else{
 				BuildPlace place = BuildUtils.getBuildPlace(event.getBlock().getLocation());
-				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName())){
+				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName()) || event.getPlayer().hasPermission("Lockette.*")){
 					
 				}else{
 					event.setCancelled(true);
@@ -86,13 +86,13 @@ public class EventListener implements Listener{
 			}
 			if(isChest(event.getBlock())){
 				event.getPlayer().sendMessage(ChatColor.RED + "STOP TRYING TO DUPE!");
-				event.setCancelled(true);
+				event.setBuild(true);
 			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
 				event.setCancelled(true);
 			}else{
 				BuildPlace place = BuildUtils.getBuildPlace(event.getBlock().getLocation());
-				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName())){
+				if(place.getOwner().equalsIgnoreCase(event.getPlayer().getName()) || event.getPlayer().hasPermission("Lockette.*")){
 					if(event.getBlock().getLocation().getBlock().getY() > (16 * place.getMultiplier()) + 3){
 						event.setCancelled(true);
 						event.getPlayer().sendMessage(ChatColor.RED + "YOU HAVE REACHED THE TOP OF YOUR BUILDPLOT! CANNOT BUILD THIS HIGH!");
