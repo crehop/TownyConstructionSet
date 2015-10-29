@@ -1,4 +1,6 @@
 package crehop;
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -8,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 
 import utils.SaveLoad;
 
@@ -19,6 +22,7 @@ public class BuildPlace {
 	private int yMin;
 	private int yMax;
 	private int multiplier;
+	private ArrayList<String> buddies;
 	boolean forSale = false;
 	String name;
 	World world;
@@ -30,6 +34,7 @@ public class BuildPlace {
 	private boolean lockout;
 	
 	public BuildPlace(Location chunkLocation, int multiplier, String name, String owner, boolean load, int cost){
+		buddies = new ArrayList<String>();
 		if(multiplier < 1){
 			this.multiplier = 1;
 		}
@@ -252,5 +257,35 @@ public class BuildPlace {
 	public void setyMax(int yMax) {
 		this.yMax = yMax;
 	} 
+	public String addBuddy(String string){
+		String statement = ChatColor.RED + "SORRY YOU HAVE TOO MANY BUDDIES MAX 5 " + ChatColor.GREEN + "/BUILD CLEARBUDDIES " + ChatColor.RED + " TO TRY AGAIN!!";
+		if(this.buddies.size()<5){
+			this.buddies.add(string);
+			statement = ChatColor.GREEN + "BUILD BUDDY " + string + " ADDED TO BUILDPLOT!";
+		}
+		return statement;
+	}
+	public String removeBuddy(String string){
+		String statement = ChatColor.GREEN + "BUILD BUDDY " + string + " REMOVED FROM BUILDPLOT!";
+		for(String buddy:buddies){
+			if(string.equalsIgnoreCase(buddy)){
+				buddies.remove(buddy);
+			}
+		}
+		return statement;
+	}
+	public String clearBuddies(){
+		String statement = ChatColor.GREEN + "BUILD BUDDIES REMOVED FROM BUILDPLOT!";
+		this.buddies.clear();
+		return statement;
+	}
+	public boolean checkBuddy(String player){
+		for(String buddy: buddies){
+			if(buddy.equalsIgnoreCase(player)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

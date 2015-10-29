@@ -131,6 +131,9 @@ public class Main extends JavaPlugin{
 				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build lockout" + ChatColor.AQUA + " if your plot is locked, unlocks it!");
 				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build tp" + ChatColor.AQUA + " in the build world tps to your plot");
 				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build tp #" + ChatColor.AQUA + " in the build world tps a plot at #");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build addbuddy name" + ChatColor.AQUA + " Add somone to help you build!");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build removebuddy name" + ChatColor.AQUA + " Remove somone from your build!");
+				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build clearbuddies" + ChatColor.AQUA + " Remove all build buddies!");
 				player.sendMessage(ChatColor.YELLOW + "[Build]:" + ChatColor.GREEN + "/build destroy" + ChatColor.RED + " DESTROYS YOUR PLOT!");
 			}
 			if(args.length == 1 && args[0].equalsIgnoreCase("place")){
@@ -172,6 +175,37 @@ public class Main extends JavaPlugin{
 					player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
 				}
 			}
+			if(args.length == 1 && args[0].equalsIgnoreCase("clearbuddies")){
+				if(player.getWorld().toString().contains("build")){
+					for(BuildPlace place:placesCheck){
+						if(place.owner.equalsIgnoreCase(player.getName())){
+							player.sendMessage(place.clearBuddies());
+							return true;
+						}
+					}
+				}
+			}
+			if(args.length == 2 && args[0].equalsIgnoreCase("addbuddy")){
+				if(player.getWorld().toString().contains("build")){
+					for(BuildPlace place:placesCheck){
+						if(place.owner.equalsIgnoreCase(player.getName())){
+							player.sendMessage(place.addBuddy(args[1]));
+							return true;
+						}
+					}
+				}
+			}
+			if(args.length == 2 && args[0].equalsIgnoreCase("removebuddy")){
+				if(player.getWorld().toString().contains("build")){
+					for(BuildPlace place:placesCheck){
+						if(place.owner.equalsIgnoreCase(player.getName())){
+							player.sendMessage(place.removeBuddy(args[1]));
+							return true;
+						}
+					}
+					player.sendMessage(ChatColor.RED + "Sorry " + args[0] + " not found, are you sure the name was correct?");
+				}
+			}
 			if(args.length == 1 && args[0].equalsIgnoreCase("lockout")){
 				for(BuildPlace place:placesCheck){
 					if(place.getOwner().equalsIgnoreCase(player.getName())){
@@ -183,7 +217,7 @@ public class Main extends JavaPlugin{
 							player.sendMessage(ChatColor.RED + "PLOT LOCKED DOWN AND PLAYERS KICKED!");
 							for(Player player2:Bukkit.getOnlinePlayers()){
 								try{
-								if(BuildUtils.getBuildPlace(player2.getLocation()).getID().equalsIgnoreCase(place.getID()) && (!(place.owner.equalsIgnoreCase(player2.getName())))){
+								if(BuildUtils.getBuildPlace(player2.getLocation()).getID().equalsIgnoreCase(place.getID()) && (!(place.owner.equalsIgnoreCase(player2.getName()))) && (!(place.checkBuddy(player2.getName())))){
 									teleport = place.chunkLocation.getChunk().getBlock(0, 0, 0).getLocation().add(-10,5,0);
 									player2.teleport(teleport);
 									player2.sendMessage(ChatColor.RED + "" + place.getOwner() + " Has removed you and locked the build plot!");
