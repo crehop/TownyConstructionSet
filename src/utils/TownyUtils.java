@@ -1,20 +1,26 @@
 package utils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 
 import crehop.BuildPlace;
 import crehop.Main;
 
+
 public class TownyUtils {
+	private static Chunk chunk;
+	private static Location location = new Location(null,0,0,0);
 	public static Town getTownAtLocation(Location loc){
 		Town town = null;
 		try {
@@ -49,6 +55,23 @@ public class TownyUtils {
 		}catch(NullPointerException e2){
 			return false;
 		}
+	}
+	public static boolean isPlotOwner(Town town, Location location, Player player){
+		for(TownBlock plot:town.getTownBlocks()){
+			try {
+				if(plot.getResident().getName().equalsIgnoreCase(player.getName())){
+					location.setWorld(Bukkit.getWorld(plot.getWorld().getName()));
+					location.setX(plot.getWorldCoord().getX());
+					location.setZ(plot.getWorldCoord().getZ());
+					
+				}
+			} catch (NotRegisteredException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+		return true;
 	}
 	
 	public static boolean isKing(Player player){
