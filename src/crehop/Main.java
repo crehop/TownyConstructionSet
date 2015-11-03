@@ -283,19 +283,19 @@ public class Main extends JavaPlugin{
 										new BlockQueue(buildPlaces.get(args[0]).chunk,player.getLocation().getChunk(),buildPlaces.get(args[0]).getMultiplier(), player.getLocation().getBlockY() -4);
 										return true;
 									}else{
-										player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+										player.sendMessage(ChatColor.RED + "PART OF THE BUILD MAY IS OUTSIDE THE TOWN!, TRY ANOTHER CHUNK IN THIS PLOT!)(CODE:100)");
 									}
 								}else{
-									player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+									player.sendMessage(ChatColor.RED + "PART OF THE BUILD MAY IS OUTSIDE THE TOWN!, TRY ANOTHER CHUNK IN THIS PLOT!)(CODE:101)");
 								}
 							}else{
-								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+								player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (CODE:102)");
 							}
 						}else{
-							player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+							player.sendMessage(ChatColor.RED + "NOT ENOUGH MONEY!, YOU NEED " + buildPlaces.get(args[0]).cost + "(CODE:103)");
 						}	
 					}else{
-						player.sendMessage(ChatColor.RED + "YOU MUST BE TO OWNER OF THE TOWN TO PLACE A BUILD! (PART OF THE BUILD MAY BE OUTSIDE THE TOWN!)");
+						player.sendMessage(ChatColor.RED + "MUST BE IN YOUR TOWN TO BUILD! (CODE:104)");
 					}
 				}
 			}

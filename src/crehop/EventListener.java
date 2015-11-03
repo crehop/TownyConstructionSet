@@ -7,6 +7,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Hopper;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -56,7 +57,7 @@ public class EventListener implements Listener{
 			}
 		}
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void blockBreakEvent(BlockBreakEvent event){
 		if(event.getBlock().getWorld().getName().toString().contains("build") && event.getPlayer().isOp() == false){
 			if(event.getBlock().getY() <= 5){
@@ -77,7 +78,7 @@ public class EventListener implements Listener{
 			}
 		}
 	}
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void blockPlaceEvent(BlockPlaceEvent event){
 		if(event.getBlock().getWorld().getName().toString().contains("build") && event.getPlayer().isOp() == false){
 			if(event.getBlock().getY() <= 5){
@@ -88,7 +89,7 @@ public class EventListener implements Listener{
 			}
 			if(isChest(event.getBlock())){
 				event.getPlayer().sendMessage(ChatColor.RED + "STOP TRYING TO DUPE!");
-				event.setBuild(true);
+				event.setCancelled(true);
 			}
 			if(BuildUtils.getBuildPlace(event.getBlock().getLocation()) == null){
 				event.setCancelled(true);

@@ -64,7 +64,7 @@ public class BuildUtils {
 			if(enoughRoomForBuildPlace(chunk,multiplier,player)){
 				int cost = 10000 * multiplier;
 				if(MoneyUtils.hasEnoughMoney(player, cost)){
-					BuildPlace build = new BuildPlace(chunk.getBlock(0, 0, 0).getLocation(), multiplier, name, player.getName(), false, 10000);
+					BuildPlace build = new BuildPlace(chunk.getBlock(0, 0, 0).getLocation(), multiplier, name, player.getName(), false, cost);
 					build.setCost(cost);
 					MoneyUtils.withdraw(player,cost);
 					SaveLoad.storeData("StoredLocations.txt");
